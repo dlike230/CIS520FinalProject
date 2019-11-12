@@ -1,4 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
 
@@ -17,3 +18,7 @@ class Model:
     def predict(self, comments_test):
         X_test = self.vectorizer.transform(comments_test)
         return self.model.predict(X_test)
+
+    def score(self, comments_test, y_test):
+        predictions = self.predict(comments_test)
+        return accuracy_score(predictions, y_test)
