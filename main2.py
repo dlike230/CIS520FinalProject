@@ -2,11 +2,13 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup as Soup
 from sklearn.decomposition import PCA, TruncatedSVD
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import ElasticNet, LogisticRegression
+from sklearn.svm import SVC
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
-df = raw_df[raw_df["HelpfulnessDenominator"] >= 3].sample(n=10000)
+df = raw_df[raw_df["HelpfulnessDenominator"] >= 10].sample(n=10000)
 # df = raw_df
 texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
@@ -15,7 +17,7 @@ helpfulnessDenominators = df["HelpfulnessDenominator"]
 reviews = [score > 3 for score in df["Score"]]
 scores = [helpfulnessNumerator / helpfulnessDenominator for helpfulnessNumerator, helpfulnessDenominator in
 		  zip(helpfulnessNumerators, helpfulnessDenominators)]
-helpfuls = [score > 0.75 for score in scores]
+helpfuls = [score > 0.7769 for score in scores]
 n_total = len(texts)
 n_train = int(n_total * 0.5)
 
@@ -25,7 +27,7 @@ text_test = texts[n_train:]
 y_train = helpfuls[:n_train]
 y_test = helpfuls[n_train:]
 
-vectorizer = TfidfVectorizer(lowercase=True, stop_words="english")
+vectorizer = TfidfVectorizer(lowercase=True)
 dim_reducer = TruncatedSVD(n_components=1000)
 X_train = dim_reducer.fit_transform(vectorizer.fit_transform(text_train))
 X_test = dim_reducer.transform(vectorizer.transform(text_test))
