@@ -7,6 +7,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import ElasticNet, LogisticRegression
 from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+import metrics
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
 df = raw_df.sample(n=10000) #, random_state = 100) #seed for consistency
@@ -33,6 +35,9 @@ dim_reducer = TruncatedSVD(n_components=1000)
 X_train = dim_reducer.fit_transform(vectorizer.fit_transform(text_train))
 X_test = dim_reducer.transform(vectorizer.transform(text_test))
 
-model = LogisticRegression(solver="lbfgs")
+# X = vectorizer.fit_transform(texts)
+# metrics.graph_reconstruction(X)
+
+model = LogisticRegression(solver="lbfgs", max_iter = 10000)
 model.fit(X_train, y_train)
 print(sklearn.metrics.fbeta_score(y_test, model.predict(X_test), 1))
