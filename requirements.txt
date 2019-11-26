@@ -2,5 +2,6 @@ numpy >= 1.17.4
 scikit-learn
 matplotlib
 pandas
-pandas
 auto-sklearn
+bs4
+tensorflow
