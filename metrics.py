@@ -4,7 +4,7 @@ from sklearn.decomposition import PCA, TruncatedSVD
 import matplotlib.pyplot as plt
 
 
-def graph_reconstruction(X, delta = 10, max_components = 1000)
+def graph_reconstruction(X, delta = 10, max_components = 1000, print_progress = False):
 
 	frobenii = [np.linalg.norm(X.toarray())]
 	rnge = [i for i in range(delta, max_components + delta, delta)]
@@ -14,6 +14,8 @@ def graph_reconstruction(X, delta = 10, max_components = 1000)
 		shrunk = dim_reducer.fit_transform(X)
 		X_reconst = dim_reducer.inverse_transform(shrunk)
 		frobenii.append(np.linalg.norm(X - X_reconst))
+		if (print_progress):
+			print("{}% complete".format(100 * i / max_components))
 
 	components = [0]
 	components.extend(rnge)
