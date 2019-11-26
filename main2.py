@@ -5,17 +5,17 @@ from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import ElasticNet, LogisticRegression
 
-raw_df = pd.read_csv("Reviews.csv", sep=',', nrows=10000, quotechar='"')
-df = raw_df[raw_df["Score"] >= 2]
+raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
+df = raw_df[raw_df["HelpfulnessDenominator"] >= 3].sample(n=10000)
 # df = raw_df
 texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
 reviews = [score > 3 for score in df["Score"]]
-scores = [helpfulnessNumerator - helpfulnessDenominator for helpfulnessNumerator, helpfulnessDenominator in
+scores = [helpfulnessNumerator / helpfulnessDenominator for helpfulnessNumerator, helpfulnessDenominator in
 		  zip(helpfulnessNumerators, helpfulnessDenominators)]
-helpfuls = [helpfulnessNumerator > 5 for helpfulnessNumerator in helpfulnessNumerators]
+helpfuls = [score > 0.75 for score in scores]
 n_total = len(texts)
 n_train = int(n_total * 0.5)
 
