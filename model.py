@@ -8,17 +8,24 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 import scipy.sparse
 import numpy as np
+from bs4 import BeautifulSoup as Soup
+
+
+class Preprocessor:
+
+    def fit_transform(self, text):
+        return Soup(text).get_text()
 
 
 class Vectorizer:
 
-    def __init__(self, pca = False):
+    def __init__(self, pca=False):
         self.base_model = None
         self.dimensionality_reducer = None
         self.pca = pca
 
     def fit_transform(self, comments: List[str]):
-        self.base_model = TfidfVectorizer(lowercase = False)
+        self.base_model = TfidfVectorizer(lowercase=False)
         X_train = self.base_model.fit_transform(comments)
         if self.pca:
             self.dimensionality_reducer = TruncatedSVD(n_components=1000)
@@ -31,6 +38,7 @@ class Vectorizer:
         else:
             return self.base_model.transform(comments)
 
+
 class Model:
 
     def __init__(self):
@@ -38,17 +46,11 @@ class Model:
         self.model = None
         self.text_indices = None
 
-    def fit(self, comments_train: List[str], y_train, text_indices : List[int] = None, categorical_indices = None):
-        self.vectorizer = Vectorizer(pca = True)
-                # X_train = np.append(X_train, x);
-        # if text_indices is not None:
-        #     self.text_indices = text_indices
-        # X_train = self.vectorize_columns(comments_train)
-        # print(X_train.shape)
+    def fit(self, comments_train: List[str], y_train):
+        self.vectorizer = Vectorizer(pca=True)
         X_train = comments_train
         self.model = SVC()
         self.model.fit(X_train, y_train)
-
 
     def vectorize_columns(self, comments_train):
         n, p = comments_train.shape
@@ -56,7 +58,7 @@ class Model:
             X_train = self.vectorizer.fit_transform(comments_train)
         else:
             X_train = comments_train[:, [i for i in range(p) if i not in self.text_indices]].astype('float64')
-            for col in comments_train[ :, self.text_indices].T:
+            for col in comments_train[:, self.text_indices].T:
                 x = self.vectorizer.fit_transform(col.astype('U'))
                 if X_train.shape[1] == 0:
                     X_train = x

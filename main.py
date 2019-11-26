@@ -16,7 +16,7 @@ import scipy.sparse
 
 # path = "C://User//Owen//Desktop//sarcasm test//train-balanced-sarcasm.csv"
 path = "train-balanced-sarcasm.csv"
-num_samples = 100000
+num_samples = 5000
 
 use_cols = (0, 1, 2, 3, 4, 9)
 
