@@ -11,7 +11,7 @@ from sklearn.svm import SVC
 from model import Model, Vectorizer, evaluate_model
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
-df = raw_df.sample(n=10000)
+df = raw_df.sample(n=10000) #, random_state = 100) #seed for consistency
 # df = raw_df
 texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
