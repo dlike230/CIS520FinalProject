@@ -10,6 +10,8 @@ import os
 import csv
 import pandas as pd
 from sklearn import preprocessing
+import autosklearn.classification
+from sklearn.metrics import accuracy_score
 import scipy.sparse
 
 # path = "C://User//Owen//Desktop//sarcasm test//train-balanced-sarcasm.csv"
@@ -32,6 +34,8 @@ X = data[1:, 1:]
 
 class_columns = [1, 2] #username, subreddit
 text_columns = [0, 4]
+
+
 
 
 # le = preprocessing.LabelEncoder()
@@ -76,11 +80,17 @@ print(X)
 X_train, y_train = X[:num_samples // 2], y[:num_samples // 2]
 X_test, y_test = X[num_samples // 2:], y[num_samples // 2:]
 
-model = Model()
+# model = Model()
 
-model.fit(X_train, y_train, text_indices = [0, 4], categorical_indices = class_columns)
+# model.fit(X_train, y_train, text_indices = [0, 4], categorical_indices = class_columns)
 
-print(model.score(X_test, y_test))
+# print(model.score(X_test, y_test))
+
+clsf = autosklearn.classification.AutoSklearnClassifier()
+clsf.fit(X_train, y_train)
+y_test = clsf.predict(X_test)
+accuracy_score(predictions, y_test)
+
 
 # print(labels)
 # print(sentences)
