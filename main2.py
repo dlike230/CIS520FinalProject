@@ -16,7 +16,7 @@ texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
 reviews = [score > 3 for score in df["Score"]]
-scores = [2 if helpfulnessDenominator < 10 else 1 if helpfulnessNumerator / helpfulnessDenominator > 0.7769 else 0 for
+scores = [helpfulnessDenominator < 2 or helpfulnessNumerator / helpfulnessDenominator < 0.7769 for
 		  helpfulnessNumerator, helpfulnessDenominator in
 		  zip(helpfulnessNumerators, helpfulnessDenominators)]
 n_total = len(texts)
@@ -33,6 +33,6 @@ dim_reducer = TruncatedSVD(n_components=1000)
 X_train = dim_reducer.fit_transform(vectorizer.fit_transform(text_train))
 X_test = dim_reducer.transform(vectorizer.transform(text_test))
 
-model = LogisticRegression(multi_class="auto", solver="lbfgs")
+model = LogisticRegression(solver="lbfgs")
 model.fit(X_train, y_train)
-print(sklearn.metrics.fbeta_score(y_test, model.predict(X_test), 1, average="micro"))
+print(sklearn.metrics.fbeta_score(y_test, model.predict(X_test), 1))
