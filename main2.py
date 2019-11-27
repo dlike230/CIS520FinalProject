@@ -6,22 +6,24 @@ from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import ElasticNet, LogisticRegression
+from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 import metrics
 
 from model import Model, Vectorizer, evaluate_model
+from rnn import RNN
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
-df = raw_df.sample(n=10000) #, random_state = 100) #seed for consistency
+df = raw_df.sample(n=10000)  # , random_state = 100) #seed for consistency
 # df = raw_df
 texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
 scores = [helpfulnessDenominator < 1 or helpfulnessNumerator / helpfulnessDenominator < 0.7769 for
-		  helpfulnessNumerator, helpfulnessDenominator in
-		  zip(helpfulnessNumerators, helpfulnessDenominators)]
+          helpfulnessNumerator, helpfulnessDenominator in
+          zip(helpfulnessNumerators, helpfulnessDenominators)]
 
 # vect = TfidfVectorizer(lowercase=True)
 # X = vect.fit_transform(texts)
@@ -29,7 +31,10 @@ scores = [helpfulnessDenominator < 1 or helpfulnessNumerator / helpfulnessDenomi
 # print(frobenii)
 # exit(0)
 
-vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
-model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
+"""vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
+# model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
+model = Model(vectorizer=vectorizer, model=SVC(C=2))"""
+model = Model(vectorizer=None, model=RNN())
+
 print(evaluate_model(model, texts, scores,
-			   score=lambda actual, predicted: sklearn.metrics.fbeta_score(actual, predicted, 1)))
+                     score=lambda actual, predicted: sklearn.metrics.fbeta_score(actual, predicted, 1)))
