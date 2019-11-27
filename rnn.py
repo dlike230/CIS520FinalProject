@@ -1,11 +1,11 @@
 import tensorflow as tf
 import nltk
+from tensorflow_core.python.keras.layers.core import Dense
 from tensorflow_core.python.keras.layers.embeddings import Embedding
 from tensorflow_core.python.keras.layers.recurrent import LSTM
 from tensorflow_core.python.keras.layers.wrappers import Bidirectional
 from tensorflow_core.python.keras.models import Sequential
 from tensorflow_core.python.keras.optimizers import Adam
-from tensorflow_core.python.layers.core import Dense
 
 
 class RNNEncoder:
