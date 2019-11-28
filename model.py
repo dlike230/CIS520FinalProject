@@ -35,11 +35,11 @@ class Model:
 		self.model = model
 
 	def fit(self, reviews_train: List[str], y_train):
-		X_train = self.vectorizer.fit_transform(reviews_train)
+		X_train = self.vectorizer.fit_transform(reviews_train) if self.vectorizer is not None else reviews_train
 		self.model.fit(X_train, y_train)
 
 	def predict(self, reviews_test: List[str]):
-		X_test = self.vectorizer.transform(reviews_test)
+		X_test = self.vectorizer.transform(reviews_test) if self.vectorizer is not None else reviews_test
 		return self.model.predict(X_test)
 
 	def score(self, comments_test: List[str], y_test, score=accuracy_score):
