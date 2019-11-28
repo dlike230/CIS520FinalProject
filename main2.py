@@ -33,7 +33,6 @@ print(vals)
 # print(frobenii)
 exit(0)
 
-
 """vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
 # model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
 model = Model(vectorizer=vectorizer, model=SVC(C=2))"""
