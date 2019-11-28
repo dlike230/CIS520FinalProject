@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import metrics
 
 from model import Model, Vectorizer, evaluate_model
-from rnn import RNN
+# from rnn import RNN
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
 df = raw_df.sample(n=10000)  # , random_state = 100) #seed for consistency
@@ -25,11 +25,13 @@ scores = [helpfulnessDenominator < 1 or helpfulnessNumerator / helpfulnessDenomi
           helpfulnessNumerator, helpfulnessDenominator in
           zip(helpfulnessNumerators, helpfulnessDenominators)]
 
-# vect = TfidfVectorizer(lowercase=True)
-# X = vect.fit_transform(texts)
+vect = TfidfVectorizer(lowercase=True)
+X = vect.fit_transform(texts)
+vals = metrics.graph_eigenvalues(X)
+print(vals)
 # _, frobenii = metrics.graph_reconstruction(X, delta = 25, max_components = 5000, print_progress = True)
 # print(frobenii)
-# exit(0)
+exit(0)
 
 """vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
 # model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
