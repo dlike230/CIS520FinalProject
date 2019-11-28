@@ -13,6 +13,7 @@ pandas = "*"
 bs4 = "*"
 tensorflow = "*"
 nltk = "*"
+tensorflow-datasets = "*"
 
 [requires]
 python_version = "3.6.8"
