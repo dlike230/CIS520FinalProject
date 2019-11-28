@@ -23,11 +23,11 @@ scores = [helpfulnessDenominator < 1 or helpfulnessNumerator / helpfulnessDenomi
 		  helpfulnessNumerator, helpfulnessDenominator in
 		  zip(helpfulnessNumerators, helpfulnessDenominators)]
 
-# vect = TfidfVectorizer(lowercase=True)
-# X = vect.fit_transform(texts)
-# _, frobenii = metrics.graph_reconstruction(X, delta = 25, max_components = 5000, print_progress = True)
-# print(frobenii)
-# exit(0)
+vect = TfidfVectorizer(lowercase=True)
+X = vect.fit_transform(texts)
+_, frobenii = metrics.graph_reconstruction(X, delta = 25, max_components = 5000, print_progress = True)
+print(frobenii)
+exit(0)
 
 vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
 model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
