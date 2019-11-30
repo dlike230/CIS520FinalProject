@@ -11,8 +11,8 @@ scikit-learn = "*"
 matplotlib = "*"
 pandas = "*"
 bs4 = "*"
-tensorflow = "*"
 nltk = "*"
+tensorflow = "*"
 tensorflow-datasets = "*"
 
 [requires]
