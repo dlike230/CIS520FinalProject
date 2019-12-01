@@ -50,9 +50,9 @@ class RNN:
         encoded = self.encoder.fit_transform(train_strings)
         vocab_size = self.encoder.vocab_size
         self.model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(vocab_size + 2, 16),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(16)),
-            tf.keras.layers.Dense(16, activation='relu'),
+            tf.keras.layers.Embedding(vocab_size + 2, 32),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+            tf.keras.layers.Dense(32, activation='relu'),
             tf.keras.layers.Dense(1, activation='sigmoid')
         ])
         self.model.compile(loss='binary_crossentropy',
