@@ -20,6 +20,8 @@ class RNNEncoder:
                  nltk.word_tokenize(sentence)] for train_string in samples]
 
     def pad(self, encoding):
+        if len(encoding) >= self.padded_length:
+            return encoding[:self.padded_length]
         return encoding + [0] * (self.padded_length - len(encoding))
 
     def _transform(self, samples_as_word_lists, word_mapping):
@@ -50,9 +52,9 @@ class RNN:
         encoded = self.encoder.fit_transform(train_strings)
         vocab_size = self.encoder.vocab_size
         self.model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(vocab_size + 2, 32),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
-            tf.keras.layers.Dense(32, activation='relu'),
+            tf.keras.layers.Embedding(vocab_size + 2, 64),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+            tf.keras.layers.Dense(64, activation='relu'),
             tf.keras.layers.Dense(1, activation='sigmoid')
         ])
         self.model.compile(loss='binary_crossentropy',

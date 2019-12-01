@@ -11,6 +11,8 @@ model = tf.keras.Sequential([
 model.compile(loss='binary_crossentropy',
               optimizer=tf.keras.optimizers.Adam(1e-4),
               metrics=['accuracy'])
-data = np.array(RNNEncoder().fit_transform(["b c a", "a a b c"]))
+encoder = RNNEncoder()
+data = encoder.fit_transform(["b c a", "a a b c"])
 print(data)
 model.fit(x=data, y=np.array([0, 1]), epochs=10)
+model.predict(x=encoder.transform(["b b asdfasdfa", "g", "sdafasdfs", "a", "a", "asdfasfasda a a a"]))
