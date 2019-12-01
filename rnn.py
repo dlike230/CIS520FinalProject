@@ -1,10 +1,8 @@
 import os
 
 import nltk
-import tensorflow as tf
 import numpy as np
-from tensorflow_core.python.framework.tensor_shape import TensorShape
-from tensorflow_datasets.core.features import FeaturesDict
+import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -52,15 +50,15 @@ class RNN:
         encoded = self.encoder.fit_transform(train_strings)
         vocab_size = self.encoder.vocab_size
         self.model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(vocab_size, 64),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-            tf.keras.layers.Dense(64, activation='relu'),
+            tf.keras.layers.Embedding(vocab_size + 2, 256),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256)),
+            tf.keras.layers.Dense(256, activation='relu'),
             tf.keras.layers.Dense(1, activation='sigmoid')
         ])
         self.model.compile(loss='binary_crossentropy',
                            optimizer=tf.keras.optimizers.Adam(1e-4),
                            metrics=['accuracy'])
-        self.model.fit(x=encoded, y=y_train, epochs=10)
+        self.model.fit(x=encoded, y=np.array([1 if item else 0 for item in y_train]), epochs=10)
 
     def predict(self, reviews_test):
         return self.model.predict(self.encoder.transform(reviews_test))

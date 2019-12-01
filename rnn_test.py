@@ -40,9 +40,9 @@ train_dataset = train_dataset.padded_batch(BATCH_SIZE, train_dataset.output_shap
 test_dataset = test_dataset.padded_batch(BATCH_SIZE, test_dataset.output_shapes)
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(encoder.vocab_size, 64),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
-    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Embedding(encoder.vocab_size + 2, 1000),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(1000)),
+    tf.keras.layers.Dense(1000, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
 model.compile(loss='binary_crossentropy',
