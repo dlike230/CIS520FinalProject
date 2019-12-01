@@ -12,29 +12,34 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 class RNNEncoder:
 
     def __init__(self):
-        self.encoder = None
+        self.transform = None
         self.vocab_size = -1
+        self.padded_length = -1
 
-    def fit_transform(self, train_strings, train_labels):
-        word_set = {word for string in train_strings for tokenized_sent in nltk.sent_tokenize(string) for word in
-                    nltk.word_tokenize(tokenized_sent)}
+    @staticmethod
+    def samples_as_word_lists(samples):
+        return [[word for sentence in nltk.sent_tokenize(train_string) for word in
+                 nltk.word_tokenize(sentence)] for train_string in samples]
+
+    def pad(self, encoding):
+        return encoding + [0] * (self.padded_length - len(encoding))
+
+    def _transform(self, samples_as_word_lists, word_mapping):
+        return np.array(
+            [self.pad([word_mapping[word] if word in word_mapping else len(word_mapping) + 1 for word in word_list]) for
+             word_list in samples_as_word_lists])
+
+    def fit_transform(self, train_strings):
+        words_per_sample = RNNEncoder.samples_as_word_lists(train_strings)
+        self.padded_length = max(len(sample) for sample in words_per_sample)
+        word_set = {word for sample in words_per_sample for word in sample}
         word_mapping = {}
         for i, word in enumerate(word_set):
-            word_mapping[word] = i
+            word_mapping[word] = i + 1
         self.vocab_size = len(word_set)
-        self.encoder = lambda text: [word_mapping[word] for sentence in nltk.sent_tokenize(text) for word in
-                                     nltk.word_tokenize(sentence)]
+        self.transform = lambda texts: self._transform(RNNEncoder.samples_as_word_lists(texts), word_mapping)
 
-        def generator():
-            return zip(
-                [tf.data.Dataset.from_tensor_slices(self.encoder(train_string)) for train_string in train_strings],
-                train_labels)
-
-        return tf.data.Dataset.from_generator(generator, output_types=(tf.int32, tf.int32),
-                                              output_shapes=(TensorShape([None, None]), TensorShape([None])))
-
-    def transform(self, strings):
-        return tf.constant([self.encoder(string) for string in strings])
+        return self._transform(words_per_sample, word_mapping)
 
 
 class RNN:
@@ -44,7 +49,7 @@ class RNN:
         self.model = None
 
     def fit(self, train_strings, y_train):
-        encoded = self.encoder.fit_transform(train_strings, y_train)
+        encoded = self.encoder.fit_transform(train_strings)
         vocab_size = self.encoder.vocab_size
         self.model = tf.keras.Sequential([
             tf.keras.layers.Embedding(vocab_size, 64),
@@ -55,7 +60,7 @@ class RNN:
         self.model.compile(loss='binary_crossentropy',
                            optimizer=tf.keras.optimizers.Adam(1e-4),
                            metrics=['accuracy'])
-        self.model.fit(encoded, epochs=10)
+        self.model.fit(x=encoded, y=y_train, epochs=10)
 
     def predict(self, reviews_test):
         return self.model.predict(self.encoder.transform(reviews_test))
