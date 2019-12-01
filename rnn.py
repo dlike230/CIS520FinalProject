@@ -63,4 +63,4 @@ class RNN:
         self.model.fit(x=encoded, y=np.array([1 if item else 0 for item in y_train]), epochs=10)
 
     def predict(self, reviews_test):
-        return self.model.predict(self.encoder.transform(reviews_test))
+        return [prediction[0] for prediction in self.model.predict(self.encoder.transform(reviews_test))]
