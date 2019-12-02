@@ -5,8 +5,8 @@ import sklearn
 from bs4 import BeautifulSoup as Soup
 from sklearn.linear_model import LogisticRegression
 
-from model import Model, Vectorizer
-from pipeline import evaluate_model
+from models.model import Model, Vectorizer
+from pipeline.pipeline import evaluate_model
 import numpy as np
 
 raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')

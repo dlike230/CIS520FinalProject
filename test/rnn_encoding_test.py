@@ -1,4 +1,4 @@
-from rnn import WordRNNEncoder
+from models.rnn import WordRNNEncoder
 import tensorflow as tf
 import numpy as np
 

@@ -1,18 +1,12 @@
 import numpy as np
-from model import Model, Vectorizer
+from models.model import Vectorizer
 # import sklearn.scikit
 # from sklearn.linear_model import, LinearRegression, LogisticRegression
-from numpy import linalg as LA
-from sklearn.decomposition import PCA, TruncatedSVD
-import matplotlib.pyplot as plt
-import random
-import os
-import csv
+from sklearn.decomposition import TruncatedSVD
 import pandas as pd
 from sklearn import preprocessing
 import autosklearn.classification
 from sklearn.metrics import accuracy_score
-import scipy.sparse
 
 # path = "C://User//Owen//Desktop//sarcasm test//train-balanced-sarcasm.csv"
 path = "train-balanced-sarcasm.csv"

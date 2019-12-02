@@ -1,15 +1,10 @@
 import pandas as pd
-import sklearn
 from bs4 import BeautifulSoup as Soup
-from sklearn.metrics import accuracy_score
-
-from model import Model
-from rnn import RNN
 
 
 class Pipeline:
     def __init__(self, label_col, metrics, p_train):
-        raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
+        raw_df = pd.read_csv("/data/Reviews.csv", sep=',', quotechar='"')
         df = raw_df.sample(n=10000)
         texts = df["Text"]
         self.texts = [Soup(text, features="html.parser").get_text() for text in texts]

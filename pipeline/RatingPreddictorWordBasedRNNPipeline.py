@@ -10,8 +10,8 @@
 model = Model(vectorizer=vectorizer, model=SVC(C=2))"""
 import sklearn
 
-from pipeline import Pipeline
-from rnn import RNN
+from pipeline.pipeline import Pipeline
+from models.rnn import RNN
 
 
 class RatingPredictorWordBasedRNNPipeline(Pipeline):
