@@ -16,7 +16,7 @@ texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
 ratings = df["Score"]
-scores = [ratings > 3 for rating in ratings]
+scores = [1 if rating > 3 else 0 for rating in ratings]
 
 # vect = TfidfVectorizer(lowercase=True)
 # X = vect.fit_transform(texts)
