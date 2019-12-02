@@ -15,7 +15,7 @@ texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
-scores = [helpfulnessDenominator < 1 or helpfulnessNumerator / helpfulnessDenominator < 0.7769 for
+scores = [helpfulnessDenominator < 5 or helpfulnessNumerator / helpfulnessDenominator < 0.7769 for
           helpfulnessNumerator, helpfulnessDenominator in
           zip(helpfulnessNumerators, helpfulnessDenominators)]
 
