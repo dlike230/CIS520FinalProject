@@ -1,4 +1,4 @@
-from rnn import RNNEncoder
+from rnn import WordRNNEncoder
 import tensorflow as tf
 import numpy as np
 
@@ -11,7 +11,7 @@ model = tf.keras.Sequential([
 model.compile(loss='binary_crossentropy',
               optimizer=tf.keras.optimizers.Adam(1e-4),
               metrics=['accuracy'])
-encoder = RNNEncoder()
+encoder = WordRNNEncoder()
 data = encoder.fit_transform(["b c a", "a a b c"])
 print(data)
 model.fit(x=data, y=np.array([0, 1]), epochs=10)

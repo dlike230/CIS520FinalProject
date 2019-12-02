@@ -7,7 +7,7 @@ import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-class RNNEncoder:
+class WordRNNEncoder:
 
     def __init__(self):
         self.transform = None
@@ -30,22 +30,57 @@ class RNNEncoder:
              word_list in samples_as_word_lists])
 
     def fit_transform(self, train_strings):
-        words_per_sample = RNNEncoder.samples_as_word_lists(train_strings)
+        words_per_sample = WordRNNEncoder.samples_as_word_lists(train_strings)
         self.padded_length = max(len(sample) for sample in words_per_sample)
         word_set = {word for sample in words_per_sample for word in sample}
         word_mapping = {}
         for i, word in enumerate(word_set):
             word_mapping[word] = i + 1
         self.vocab_size = len(word_set)
-        self.transform = lambda texts: self._transform(RNNEncoder.samples_as_word_lists(texts), word_mapping)
+        self.transform = lambda texts: self._transform(WordRNNEncoder.samples_as_word_lists(texts), word_mapping)
 
         return self._transform(words_per_sample, word_mapping)
 
 
-class RNN:
+class CharacterRNNEncoder:
 
     def __init__(self):
-        self.encoder = RNNEncoder()
+        self.transform = None
+        self.vocab_size = -1
+        self.padded_length = -1
+
+    def pad(self, encoding):
+        if len(encoding) >= self.padded_length:
+            return encoding[:self.padded_length]
+        return encoding + [0] * (self.padded_length - len(encoding))
+
+    def _transform(self, samples, character_mapping):
+        return np.array(
+            [self.pad(
+                [character_mapping[character] if character in character_mapping else len(character_mapping) + 1 for
+                 character in
+                 characters]) for
+             characters in samples])
+
+    def fit_transform(self, train_strings):
+        self.padded_length = max(len(sample) for sample in train_strings)
+        character_set = {c for sample in train_strings for c in sample}
+        character_mapping = {}
+        for i, character in enumerate(character_set):
+            character_mapping[character] = i + 1
+        self.vocab_size = len(character_set)
+        self.transform = lambda texts: self._transform(WordRNNEncoder.samples_as_word_lists(texts), character_mapping)
+
+        return self._transform(train_strings, character_mapping)
+
+
+class RNN:
+
+    def __init__(self, encode_words=False):
+        if encode_words:
+            self.encoder = WordRNNEncoder()
+        else:
+            self.encoder = CharacterRNNEncoder()
         self.model = None
 
     def fit(self, train_strings, y_train):
