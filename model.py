@@ -3,7 +3,6 @@ from typing import List
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
 
@@ -41,18 +40,3 @@ class Model:
     def predict(self, reviews_test: List[str]):
         X_test = self.vectorizer.transform(reviews_test) if self.vectorizer is not None else reviews_test
         return np.array([round(prediction) for prediction in self.model.predict(X_test)])
-
-    def score(self, comments_test: List[str], y_test, score=accuracy_score):
-        predictions = self.predict(comments_test)
-        return score(predictions, y_test)
-
-
-def evaluate_model(model: Model, reviews, labels, p_train=0.5, score=accuracy_score):
-    n_train = int(p_train * len(reviews))
-    reviews_train = reviews[:n_train]
-    reviews_test = reviews[n_train:]
-    labels_train = labels[:n_train]
-    labels_test = labels[n_train:]
-    model.fit(reviews_train, labels_train)
-    predictions = model.predict(reviews_test)
-    return score(predictions, labels_test)

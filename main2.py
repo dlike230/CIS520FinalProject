@@ -1,23 +1,3 @@
-import pandas as pd
-import sklearn
-from bs4 import BeautifulSoup as Soup
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-import metrics
-from model import Model, evaluate_model
-
-from rnn import RNN
-
-raw_df = pd.read_csv("Reviews.csv", sep=',', quotechar='"')
-df = raw_df.sample(n=10000)  # , random_state = 100) #seed for consistency
-# df = raw_df
-texts = df["Text"]
-texts = [Soup(text, features="html.parser").get_text() for text in texts]
-helpfulnessNumerators = df["HelpfulnessNumerator"]
-helpfulnessDenominators = df["HelpfulnessDenominator"]
-ratings = df["Score"]
-scores = [1 if rating > 3 else 0 for rating in ratings]
-
 # vect = TfidfVectorizer(lowercase=True)
 # X = vect.fit_transform(texts)
 # vals = metrics.graph_eigenvalues(X)
@@ -28,7 +8,24 @@ scores = [1 if rating > 3 else 0 for rating in ratings]
 """vectorizer = Vectorizer(pca=True, base_model=TfidfVectorizer(lowercase=True))
 # model = Model(vectorizer=vectorizer, model=LogisticRegression(solver="lbfgs", max_iter = 10000))
 model = Model(vectorizer=vectorizer, model=SVC(C=2))"""
-model = Model(vectorizer=None, model=RNN())
+import sklearn
 
-print(evaluate_model(model, texts, scores,
-                     score=lambda actual, predicted: sklearn.metrics.fbeta_score(actual, predicted, 1)))
+from pipeline import Pipeline
+from rnn import RNN
+
+
+class RatingPredictorWordBasedRNNPipeline(Pipeline):
+
+    def __init__(self):
+        super().__init__("Score", [sklearn.metrics.accuracy_score,
+                                   lambda actual, predicted: sklearn.metrics.fbeta_score(actual, predicted, 1)],
+                         0.5)
+
+    def make_model(self):
+        return RNN(encode_words=True)
+
+    def label_func(self, item):
+        return 1 if item > 3 else 0
+
+
+RatingPredictorWordBasedRNNPipeline().evaluate()
