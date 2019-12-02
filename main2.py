@@ -15,9 +15,8 @@ texts = df["Text"]
 texts = [Soup(text, features="html.parser").get_text() for text in texts]
 helpfulnessNumerators = df["HelpfulnessNumerator"]
 helpfulnessDenominators = df["HelpfulnessDenominator"]
-scores = [helpfulnessDenominator < 5 or helpfulnessNumerator / helpfulnessDenominator < 0.7769 for
-          helpfulnessNumerator, helpfulnessDenominator in
-          zip(helpfulnessNumerators, helpfulnessDenominators)]
+ratings = df["Score"]
+scores = [ratings > 3 for rating in ratings]
 
 # vect = TfidfVectorizer(lowercase=True)
 # X = vect.fit_transform(texts)

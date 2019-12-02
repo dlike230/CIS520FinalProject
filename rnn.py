@@ -76,7 +76,7 @@ class CharacterRNNEncoder:
 
 class RNN:
 
-    def __init__(self, encode_words=False):
+    def __init__(self, encode_words=True):
         if encode_words:
             self.encoder = WordRNNEncoder()
         else:
