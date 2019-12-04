@@ -1,13 +1,9 @@
-import pandas as pd
-from bs4 import BeautifulSoup as Soup
+from pipeline.fetch_data import fetch_data
 
 
 class Pipeline:
     def __init__(self, label_col, metrics, p_train):
-        raw_df = pd.read_csv("/data/Reviews.csv", sep=',', quotechar='"')
-        df = raw_df.sample(n=10000)
-        texts = df["Text"]
-        self.texts = [Soup(text, features="html.parser").get_text() for text in texts]
+        self.text_data, df = fetch_data()
         column = df[label_col]
         self.labels = [self.label_func(item) for item in column]
         self.metrics = metrics
