@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from torch import nn
 import torch
 from torch.utils.data import DataLoader
@@ -10,9 +10,13 @@ class AutoencoderNN(nn.Module):
         super(AutoencoderNN, self).__init__()
         self.encoder = nn.Sequential(nn.Linear(in_dim, 256),
                                      nn.ReLU(),
-                                     nn.Linear(256, n),
+                                     nn.Linear(256, 64),
+                                     nn.ReLU(),
+                                     nn.Linear(64, n),
                                      nn.ReLU(),)
-        self.decoder = nn.Sequential(nn.Linear(n, 256),
+        self.decoder = nn.Sequential(nn.Linear(n, 64),
+                                     nn.ReLU(),
+                                     nn.Linear(64, 256),
                                      nn.ReLU(),
                                      nn.Linear(256, in_dim),
                                      nn.Tanh())
@@ -24,21 +28,19 @@ class AutoencoderNN(nn.Module):
 
 class BagOfWordsAutoEncoder:
 
-    def __init__(self, num_epochs=3):
-        self.vectorizer = TfidfVectorizer()
-        self.encoder = None
-        self.decoder = None
+    def __init__(self, num_epochs=10):
+        self.vectorizer = CountVectorizer()
         self.model = None
         self.num_epochs = num_epochs
 
-    def fit_transform(self, reviews):
+    def fit_transform(self, reviews, validation_set=None):
         vectors = self.vectorizer.fit_transform(reviews).toarray()
         in_size = vectors.shape[1]
-        self.model = AutoencoderNN(in_size, n=2)
+        self.model = AutoencoderNN(in_size, n=10)
         criterion = nn.MSELoss()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=1E-4)
         trainloader = DataLoader(vectors, batch_size=32, shuffle=True)
-        batch_losses = []
+        validation_losses = []
         for epoch in range(self.num_epochs):
             total_loss = 0
             num_items = 0
@@ -49,27 +51,26 @@ class BagOfWordsAutoEncoder:
                 output = self.model.forward(data)
                 loss = criterion(output, data)
                 loss_val = loss.item()
-                batch_losses.append(loss_val)
                 total_loss += loss_val
                 num_items += 1
                 loss.backward()
                 optimizer.step()
                 if i % 20 == 0:
-                    print("Running loss estimate: %f" % (total_loss / num_items))
-        plt.plot(batch_losses)
-        plt.show()
+                    val_loss = self.reconstruction_error(validation_set)
+                    print("Validation loss: %f" % val_loss)
+                    validation_losses.append(val_loss)
+        # plt.plot(batch_losses)
+        # plt.show()
         return self._transform(vectors)
 
     def _transform(self, vectors):
         return self.model.encoder(torch.from_numpy(vectors).float()).detach().numpy()
 
     def reconstruction_error(self, reviews):
-        vectors = self.vectorizer.transform(reviews).toarray()
+        vectors = self.vectorizer.transform(reviews).toarray().astype("float32")
         encoded = self._transform(vectors)
-        decoded = np.array(self.decoder.predict(encoded))
-        print(decoded.shape)
-        print(vectors.shape)
-        return sum(np.linalg.norm(decoded_vec, vector) for vector, decoded_vec in zip(vectors, decoded)) / len(vectors)
+        decoded = self.model.decoder(torch.from_numpy(encoded)).detach().numpy()
+        return np.linalg.norm(vectors - decoded) ** 2 / len(reviews)
 
     def transform(self, reviews):
         return self._transform(self.vectorizer.transform(reviews).toarray())
