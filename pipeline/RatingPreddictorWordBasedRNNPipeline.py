@@ -10,7 +10,7 @@
 model = Model(vectorizer=vectorizer, model=SVC(C=2))"""
 import sklearn
 
-from pipeline.pipeline import Pipeline
+from pipeline.Pipeline import Pipeline
 from models.rnn import RNN
 
 

@@ -21,9 +21,9 @@ class Pipeline:
         raise Exception("Not implemented")
 
     def evaluate(self):
-        n_train = int(self.p_train * len(self.texts))
-        reviews_train = self.texts[:n_train]
-        reviews_test = self.texts[n_train:]
+        n_train = int(self.p_train * len(self.text_data))
+        reviews_train = self.text_data[:n_train]
+        reviews_test = self.text_data[n_train:]
         labels_train = self.labels[:n_train]
         labels_test = self.labels[n_train:]
         model = self.make_model()

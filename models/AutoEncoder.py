@@ -8,17 +8,18 @@ import matplotlib.pyplot as plt
 class AutoencoderNN(nn.Module):
     def __init__(self, in_dim, n=64):
         super(AutoencoderNN, self).__init__()
-        self.encoder = nn.Sequential(nn.Linear(in_dim, 256),
+        self.encoder = nn.Sequential(
+                                     nn.Linear(in_dim, 128),
                                      nn.ReLU(),
-                                     nn.Linear(256, 64),
+                                     nn.Linear(128, 64),
                                      nn.ReLU(),
                                      nn.Linear(64, n),
                                      nn.ReLU(),)
         self.decoder = nn.Sequential(nn.Linear(n, 64),
                                      nn.ReLU(),
-                                     nn.Linear(64, 256),
+                                     nn.Linear(64, 128),
                                      nn.ReLU(),
-                                     nn.Linear(256, in_dim),
+                                     nn.Linear(128, in_dim),
                                      nn.Tanh())
 
     def forward(self, x):
@@ -36,7 +37,7 @@ class BagOfWordsAutoEncoder:
     def fit_transform(self, reviews, validation_set=None):
         vectors = self.vectorizer.fit_transform(reviews).toarray()
         in_size = vectors.shape[1]
-        self.model = AutoencoderNN(in_size, n=10)
+        self.model = AutoencoderNN(in_size, n=32)
         criterion = nn.MSELoss()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=1E-4)
         trainloader = DataLoader(vectors, batch_size=32, shuffle=True)
@@ -55,7 +56,7 @@ class BagOfWordsAutoEncoder:
                 num_items += 1
                 loss.backward()
                 optimizer.step()
-                if i % 20 == 0:
+                if i % 20 == 0 and validation_set is not None:
                     val_loss = self.reconstruction_error(validation_set)
                     print("Validation loss: %f" % val_loss)
                     validation_losses.append(val_loss)
