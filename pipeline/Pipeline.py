@@ -8,8 +8,8 @@ class Pipeline:
         df = get_df()
         df[label_col] = df[label_col].apply(self.label_func)
         if should_subsample:
-            part1: DataFrame = df[df[label_col] == 1].sample(n=sample_size/2)
-            part2: DataFrame = df[df[label_col] == 0].sample(n=sample_size / 2)
+            part1: DataFrame = df[df[label_col] == 1].sample(n=sample_size // 2)
+            part2: DataFrame = df[df[label_col] == 0].sample(n=sample_size // 2)
             df = part1.append(part2)
             df = df.sample(frac=1)
         else:
