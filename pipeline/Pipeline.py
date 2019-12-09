@@ -1,11 +1,21 @@
-from pipeline.fetch_data import fetch_data
+from pandas import DataFrame
+
+from pipeline.fetch_data import fetch_data, get_df, extract_text
 
 
 class Pipeline:
-    def __init__(self, label_col, metrics, p_train):
-        self.text_data, df = fetch_data()
-        column = df[label_col]
-        self.labels = [self.label_func(item) for item in column]
+    def __init__(self, label_col, metrics, p_train, should_subsample=True, sample_size=10000):
+        df = get_df()
+        df[label_col] = df[label_col].apply(self.label_func)
+        if should_subsample:
+            part1: DataFrame = df[df[label_col] == 1].sample(n=sample_size/2)
+            part2: DataFrame = df[df[label_col] == 0].sample(n=sample_size / 2)
+            df = part1.append(part2)
+            df = df.sample(frac=1)
+        else:
+            df = df.sample(n=sample_size)
+        self.text_data = extract_text(df)
+        self.labels = df[label_col]
         self.metrics = metrics
         self.p_train = p_train
 
