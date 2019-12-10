@@ -1,12 +1,13 @@
 import ktrain
+#import tensorflow.compat.v1 as tf
 from ktrain import text
-
 
 class BERT:
     def __init__(self):
         self.model = None
 
     def fit(self, train_strings, y_train):
+        #tf.disable_v2_behavior()
         (x_train, y_train), (x_test, y_test), preproc = \
             text.texts_from_array(train_strings, y_train, class_names=["low", "high"], preprocess_mode="bert", maxlen=500)
         self.model = text.text_classifier('bert', (x_train, y_train), preproc=preproc)
