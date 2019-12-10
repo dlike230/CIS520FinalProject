@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from sklearn.metrics import accuracy_score, fbeta_score, auc
 import numpy as np
-from pipeline.fetch_data import fetch_data, get_df, extract_text
+from pipeline.fetch_data import fetch_data, get_df, extract_text, balance_dataset
 
 
 class Pipeline:
@@ -9,10 +9,7 @@ class Pipeline:
         df = get_df()
         df[label_col] = df[label_col].apply(self.label_func)
         if should_subsample:
-            part1: DataFrame = df[df[label_col] == 1].sample(n=sample_size // 2)
-            part2: DataFrame = df[df[label_col] == 0].sample(n=sample_size // 2)
-            df = part1.append(part2)
-            df = df.sample(frac=1)
+            df = balance_dataset(df, label_col, sample_size)
         else:
             df = df.sample(n=sample_size)
         self.text_data = extract_text(df)
@@ -38,7 +35,15 @@ class Pipeline:
         labels_train = self.labels[:n_train]
         labels_test = self.labels[n_train:]
         model = self.make_model()
-        model.fit(reviews_train, np.array(labels_train))
-        predictions = np.round(model.predict(reviews_test))
-        for i, score in enumerate(self.metrics):
-            print("Metric", str(i) + ":", score(predictions, np.array(labels_test)))
+        if type(model) == list:
+            for model_num, individual_model in enumerate(model):
+                print("MODEL %d" % model_num)
+                individual_model.fit(reviews_train, np.array(labels_train))
+                predictions = np.round(individual_model.predict(reviews_test))
+                for i, score in enumerate(self.metrics):
+                    print("Metric", str(i) + ":", score(predictions, np.array(labels_test)))
+        else:
+            model.fit(reviews_train, np.array(labels_train))
+            predictions = np.round(model.predict(reviews_test))
+            for i, score in enumerate(self.metrics):
+                print("Metric", str(i) + ":", score(predictions, np.array(labels_test)))
