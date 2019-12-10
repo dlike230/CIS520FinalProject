@@ -4,3 +4,4 @@
 *.csv.bz2
 *.pyc
 bert_model/
+.idea/
