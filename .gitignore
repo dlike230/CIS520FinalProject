@@ -5,3 +5,4 @@
 *.pyc
 bert_model/
 .idea/
+test/scratch.py
