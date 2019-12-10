@@ -2,7 +2,7 @@ import sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression, LogisticRegression
 
-from models.AutoEncoder import BagOfWordsAutoEncoder
+from models.WordAutoEncoder import BagOfWordsAutoEncoder
 from models.model import Model, Vectorizer
 from pipeline.Pipeline import Pipeline
 

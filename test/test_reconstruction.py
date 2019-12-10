@@ -1,5 +1,5 @@
 from pipeline.fetch_data import fetch_data
-from models.AutoEncoder import BagOfWordsAutoEncoder
+from models.WordAutoEncoder import BagOfWordsAutoEncoder
 
 text_data, df = fetch_data()
 n = len(text_data)
