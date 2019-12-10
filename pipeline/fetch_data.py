@@ -15,6 +15,9 @@ def extract_text(df) -> List[str]:
 
 def fetch_data(sample_size=10000):
     raw_df = get_df()
-    df = raw_df.sample(n=sample_size)
+    if sample_size is not None:
+        df = raw_df.sample(n=sample_size)
+    else:
+        df = raw_df
     texts = extract_text(df)
     return texts, df
