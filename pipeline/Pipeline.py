@@ -1,11 +1,11 @@
 from pandas import DataFrame
 from sklearn.metrics import accuracy_score, fbeta_score, auc
-
+import numpy as np
 from pipeline.fetch_data import fetch_data, get_df, extract_text
 
 
 class Pipeline:
-    def __init__(self, label_col, p_train, should_subsample=True, sample_size=10000):
+    def __init__(self, label_col, p_train, should_subsample=True, sample_size=20000):
         df = get_df()
         df[label_col] = df[label_col].apply(self.label_func)
         if should_subsample:
@@ -38,7 +38,7 @@ class Pipeline:
         labels_train = self.labels[:n_train]
         labels_test = self.labels[n_train:]
         model = self.make_model()
-        model.fit(reviews_train, labels_train)
-        predictions = model.predict(reviews_test)
+        model.fit(reviews_train, np.array(labels_train))
+        predictions = np.round(model.predict(reviews_test))
         for i, score in enumerate(self.metrics):
-            print("Metric", str(i) + ":", score(predictions, labels_test))
+            print("Metric", str(i) + ":", score(predictions, np.array(labels_test)))
