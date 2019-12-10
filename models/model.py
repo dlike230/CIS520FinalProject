@@ -39,4 +39,4 @@ class Model:
 
     def predict(self, reviews_test: List[str]):
         X_test = self.vectorizer.transform(reviews_test) if self.vectorizer is not None else reviews_test
-        return np.array([round(prediction) for prediction in self.model.predict(X_test)])
+        return np.round(np.array(self.model.predict(X_test)))

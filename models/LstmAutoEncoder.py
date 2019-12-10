@@ -1,12 +1,12 @@
 import tensorflow as tf
 
-from models.Rnn import WordRNNEncoder
+from models.Rnn import WordEncoder
 
 
 class LstmAutoEncoder:
 
     def __init__(self, n_dimensions=32):
-        self.text_seq_encoder = WordRNNEncoder()
+        self.text_seq_encoder = WordEncoder()
         self.model = None
         self.n_dimensions = n_dimensions
 
@@ -22,7 +22,7 @@ class LstmAutoEncoder:
                                             tf.keras.layers.LSTM(100, activation='relu', return_sequences=True)])
         self.model = tf.keras.Sequential(self.encoder, self.decoder)
         self.model.compile(optimizer='adam', loss='mse')
-        self.model.fit(encoded_sequences, encoded_sequences)
+        self.model.fit(x=encoded_sequences, y=encoded_sequences)
         return self._transform(encoded_sequences)
 
     def _transform(self, encoded_sequences):
