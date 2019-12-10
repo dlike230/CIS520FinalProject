@@ -10,7 +10,7 @@ eval_data = [['Example eval sentence belonging to class 1', 1], ['Example eval s
 eval_df = pd.DataFrame(eval_data)
 
 # Create a ClassificationModel
-model = ClassificationModel('bert', 'bert-base-uncased', use_cuda = False) # You can set class weights by using the optional weight argument
+model = ClassificationModel('bert', 'bert-base-uncased') # You can set class weights by using the optional weight argument
 
 # Train the model
 model.train_model(train_df)
