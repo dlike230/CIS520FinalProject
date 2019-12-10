@@ -12,3 +12,6 @@ class Dumb:
 
     def predict(self, reviews_test):
         return [self.model] * len(reviews_test)
+
+    def get_params(self, deep = True):
+        return {}
