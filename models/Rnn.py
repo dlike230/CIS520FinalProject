@@ -27,7 +27,6 @@ class RNN:
         vocab_size = self.encoder.vocab_size
         self.model = tf.keras.Sequential([
             tf.keras.layers.Embedding(vocab_size + 2, 512),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(512, return_sequences=True)),
             tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256)),
             tf.keras.layers.Dense(1024, activation='relu'),
             tf.keras.layers.Dense(128, activation='relu'),
