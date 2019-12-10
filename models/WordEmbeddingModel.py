@@ -21,3 +21,6 @@ class WordEmbeddingModel:
 
     def predict(self, vectors):
         return self.model.predict(vectors)
+
+    def get_params(self, deep = True):
+        return {}
