@@ -17,9 +17,7 @@ from models.rnn import RNN
 class RatingPredictorWordBasedRNNPipeline(Pipeline):
 
     def __init__(self):
-        super().__init__("Score", [sklearn.metrics.accuracy_score,
-                                   lambda actual, predicted: sklearn.metrics.fbeta_score(actual, predicted, 1)],
-                         0.5)
+        super().__init__("Score", 0.5)
 
     def make_model(self):
         return RNN(encode_words=True)

@@ -1,10 +1,11 @@
 from pandas import DataFrame
+from sklearn.metrics import accuracy_score, fbeta_score, auc
 
 from pipeline.fetch_data import fetch_data, get_df, extract_text
 
 
 class Pipeline:
-    def __init__(self, label_col, metrics, p_train, should_subsample=True, sample_size=10000):
+    def __init__(self, label_col, p_train, should_subsample=True, sample_size=10000):
         df = get_df()
         df[label_col] = df[label_col].apply(self.label_func)
         if should_subsample:
@@ -16,7 +17,7 @@ class Pipeline:
             df = df.sample(n=sample_size)
         self.text_data = extract_text(df)
         self.labels = df[label_col]
-        self.metrics = metrics
+        self.metrics = [accuracy_score, lambda a, b: fbeta_score(a, b, 1)]
         self.p_train = p_train
 
     def label_func(self, item):
