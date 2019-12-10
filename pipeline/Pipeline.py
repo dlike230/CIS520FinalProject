@@ -36,8 +36,8 @@ class Pipeline:
         labels_test = self.labels[n_train:]
         model = self.make_model()
         if type(model) == list:
-            for model_num, individual_model in enumerate(model):
-                print("MODEL %d" % model_num)
+            for model_name, individual_model in model:
+                print("MODEL %s" % model_name)
                 individual_model.fit(reviews_train, np.array(labels_train))
                 predictions = np.round(individual_model.predict(reviews_test))
                 for i, score in enumerate(self.metrics):
