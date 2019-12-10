@@ -7,5 +7,5 @@ train_data = text_data[:n//2]
 test_data = text_data[n//2:]
 
 autoencoder = BagOfWordsAutoEncoder()
-autoencoder.fit_transform(train_data)
+autoencoder.fit_transform(train_data, validation_set=test_data)
 print(autoencoder.reconstruction_error(test_data))
