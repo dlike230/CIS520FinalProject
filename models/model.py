@@ -8,23 +8,29 @@ from sklearn.svm import SVC
 
 class Vectorizer:
 
-    def __init__(self, pca=True, base_model=TfidfVectorizer(lowercase=True)):
+    def __init__(self, pca=True, base_model=TfidfVectorizer(lowercase=True), make_array=False):
         self.base_model = base_model
         self.dimensionality_reducer = None
         self.pca = pca
+        self.make_array = make_array
 
     def fit_transform(self, reviews: List[str]):
         X_train = self.base_model.fit_transform(reviews)
         if self.pca:
             self.dimensionality_reducer = TruncatedSVD(n_components=1000)
             X_train = self.dimensionality_reducer.fit_transform(X_train)
+        elif self.make_array:
+            X_train = X_train.toarray()
         return X_train
 
     def transform(self, comments: List[str]):
         if self.pca:
-            return self.dimensionality_reducer.transform(self.base_model.transform(comments))
+            comments = self.dimensionality_reducer.transform(self.base_model.transform(comments))
         else:
-            return self.base_model.transform(comments)
+            comments = self.base_model.transform(comments)
+            if self.make_array:
+                comments = comments.toarray()
+        return comments
 
 
 class Model:

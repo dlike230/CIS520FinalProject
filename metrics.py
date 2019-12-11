@@ -1,5 +1,4 @@
 import numpy as np
-import sklearn
 from sklearn.decomposition import PCA, TruncatedSVD
 import matplotlib.pyplot as plt
 
@@ -28,11 +27,7 @@ def graph_reconstruction(X, delta = 10, max_components = 1000, print_progress = 
 def graph_eigenvalues(X):
 	X = X.toarray()
 	_, s, _ = np.linalg.svd(X)
-	# values, _ = np.linalg.eig(X.T @ X)
 	values = s
-	# values.sort()
 	plt.plot(values)
 	plt.show()
-	# plt.plot(values[::-1])
-	# plt.show()
 	return values

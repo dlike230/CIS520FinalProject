@@ -15,10 +15,5 @@ class RatingPredictorAutoSklearnDimReduction(Pipeline):
     def label_func(self, item):
         return 1 if item > 3 else 0
 
-    def evaluate(self):
-        super().evaluate()
-        self.model.model.sprint_statistics()
-        self.model.model.show_models()
-
 
 RatingPredictorAutoSklearnDimReduction().evaluate()

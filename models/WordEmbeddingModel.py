@@ -23,4 +23,9 @@ class WordEmbeddingModel:
         return self.model.predict(vectors)
 
     def get_params(self, deep = True):
-        return {}
+        return {'model':self.model}
+
+    def set_params(self, **parameters):
+        for parameter, value in parameters.items():
+            setattr(self, parameter, value)
+        return self

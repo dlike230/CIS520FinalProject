@@ -48,4 +48,9 @@ class RNN:
         return [prediction[0] for prediction in self.model.predict(self.encoder.transform(reviews_test))]
 
     def get_params(self, deep = True):
-        return {}
+        return {'model':self.model, 'encoder':self.encoder}
+
+    def set_params(self, **parameters):
+        for parameter, value in parameters.items():
+            setattr(self, parameter, value)
+        return self
