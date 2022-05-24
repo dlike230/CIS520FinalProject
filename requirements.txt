@@ -6,4 +6,4 @@ scikit-learn
 matplotlib
 pandas
 bs4
-tensorflow == 1.14
+tensorflow == 2.6.4
